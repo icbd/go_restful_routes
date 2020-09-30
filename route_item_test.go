@@ -52,3 +52,13 @@ func TestNewRouteItem(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func Test_validHTTPMethod(t *testing.T) {
+	item, _ := newRouteItem("/", fakeHandler, []string{http.MethodGet, http.MethodPost})
+	if !item.validHTTPMethod(http.MethodPost) {
+		t.Fail()
+	}
+	if item.validHTTPMethod(http.MethodDelete) {
+		t.Fail()
+	}
+}

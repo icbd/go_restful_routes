@@ -43,3 +43,12 @@ func (item *routeItem) fillKey() *routeItem {
 	item.key = fmt.Sprintf("%x", md5.Sum(bytes))
 	return item
 }
+
+func (item *routeItem) validHTTPMethod(method string) bool {
+	for _, m := range item.HTTPMethods {
+		if method == m {
+			return true
+		}
+	}
+	return false
+}
