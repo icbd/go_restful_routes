@@ -27,7 +27,7 @@ func TestNewRoutingTable(t *testing.T) {
 
 func TestRegister(t *testing.T) {
 	handler := func(writer http.ResponseWriter, request *http.Request) {}
-	var item *RouteItem
+	var item *routeItem
 	var err error
 	var table *RoutingTable
 

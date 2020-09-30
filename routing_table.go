@@ -12,20 +12,20 @@ import (
 // otherwise, store it in match(slice).
 type RoutingTable struct {
 	mux  *http.ServeMux
-	full map[string]*RouteItem // routesHash => *RouteItem
+	full map[string]*routeItem // routesHash => *routeItem
 
-	fast  map[string]*RouteItem // `/users/`
-	regex []*RouteItem          // `{^/[a-z]+\[[0-9]+\]$}`
-	match []*RouteItem          // `/users/{:id}/posts/{:post_id}`
+	fast  map[string]*routeItem // `/users/`
+	regex []*routeItem          // `{^/[a-z]+\[[0-9]+\]$}`
+	match []*routeItem          // `/users/{:id}/posts/{:post_id}`
 }
 
 func NewRoutingTable() *RoutingTable {
 	return &RoutingTable{
 		mux:   http.NewServeMux(),
-		full:  make(map[string]*RouteItem),
-		fast:  make(map[string]*RouteItem),
-		regex: make([]*RouteItem, 0, 0),
-		match: make([]*RouteItem, 0, 0),
+		full:  make(map[string]*routeItem),
+		fast:  make(map[string]*routeItem),
+		regex: make([]*routeItem, 0, 0),
+		match: make([]*routeItem, 0, 0),
 	}
 }
 
@@ -43,7 +43,7 @@ func (r *RoutingTable) ServeHTTP(wrt http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *http.Request), methods []string) (item *RouteItem, err error) {
+func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *http.Request), methods []string) (item *routeItem, err error) {
 	if item, err = NewRouteItem(path, handler, methods); err != nil {
 		return
 	}
