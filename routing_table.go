@@ -22,11 +22,12 @@ type RoutingTable struct {
 
 func NewRoutingTable() *RoutingTable {
 	return &RoutingTable{
-		mux:   http.NewServeMux(),
-		full:  make(map[string]*routeItem),
-		fast:  make(map[string]*routeItem),
-		regex: make([]*routeItem, 0, 0),
-		match: make([]*routeItem, 0, 0),
+		mux:    http.NewServeMux(),
+		full:   make(map[string]*routeItem),
+		fast:   make(map[string]*routeItem),
+		prefix: make(map[string]*routeItem),
+		regex:  make([]*routeItem, 0, 0),
+		match:  make([]*routeItem, 0, 0),
 	}
 }
 
@@ -56,6 +57,8 @@ func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *
 	case strings.Contains(path, "{"):
 		item.pathBlocks = strings.Split(item.Path, "/")
 		r.match = append(r.match, item)
+	case path[len(path)-1:] == "/":
+		r.prefix[path] = item
 	default:
 		r.fast[path] = item
 	}

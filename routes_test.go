@@ -9,7 +9,7 @@ import (
 // register: /user
 // when /user  √
 // when /user/ x
-func Test_seekFast_withoutSlashEnd(t *testing.T) {
+func Test_seekFast(t *testing.T) {
 	r := NewRoutingTable()
 	_, _ = r.Register("/users", fakeHandler, []string{http.MethodGet})
 
@@ -26,6 +26,51 @@ func Test_seekFast_withoutSlashEnd(t *testing.T) {
 	req, _ = http.NewRequest(http.MethodGet, "/users/", nil)
 	r.ServeHTTP(wr, req)
 	if wr.Code != http.StatusNotFound {
+		t.Fail()
+	}
+}
+
+// register: /user/
+// when /user/ √
+// when /user/hi/hello √
+// when /user/hi/hello/ √
+func Test_seekPrefix(t *testing.T) {
+	r := NewRoutingTable()
+	_, _ = r.Register("/users/", fakeHandler, []string{http.MethodGet})
+
+	// success
+	wr := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/users/", nil)
+	r.ServeHTTP(wr, req)
+	if wr.Code != http.StatusOK {
+		t.Fail()
+	}
+
+	wr = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/users/hi", nil)
+	r.ServeHTTP(wr, req)
+	if wr.Code != http.StatusOK {
+		t.Fail()
+	}
+
+	wr = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/users/hi/", nil)
+	r.ServeHTTP(wr, req)
+	if wr.Code != http.StatusOK {
+		t.Fail()
+	}
+
+	wr = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/users/hi/hello", nil)
+	r.ServeHTTP(wr, req)
+	if wr.Code != http.StatusOK {
+		t.Fail()
+	}
+
+	wr = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/users/hi/hello/", nil)
+	r.ServeHTTP(wr, req)
+	if wr.Code != http.StatusOK {
 		t.Fail()
 	}
 }
