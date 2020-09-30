@@ -19,9 +19,8 @@ func (r *RoutingTable) seek(req *http.Request) (item *routeItem) {
 	return nil
 }
 
-func (r *RoutingTable) seekFast(req *http.Request) *routeItem {
-	path := normalizeFastPath(req.URL.Path)
-	if item, ok := r.fast[path]; ok {
+func (r *RoutingTable) seekFast(req *http.Request) (item *routeItem) {
+	if item, ok := r.fast[req.URL.Path]; ok {
 		if item.validHTTPMethod(req.Method) {
 			req.URL.Path = item.key
 			return item
@@ -41,3 +40,7 @@ func (r *RoutingTable) seekRegex(req *http.Request) (item *routeItem) {
 	}
 	return nil
 }
+
+//func (r *RoutingTable) seekMatch(req *http.Request) (item *routeItem) {
+//
+//}

@@ -14,9 +14,10 @@ type RoutingTable struct {
 	mux  *http.ServeMux
 	full map[string]*routeItem // routesHash => *routeItem
 
-	fast  map[string]*routeItem // `/users/`
-	regex []*routeItem          // `{^/[a-z]+\[[0-9]+\]$}`
-	match []*routeItem          // `/users/{:id}/posts/{:post_id}`
+	fast   map[string]*routeItem // `/users`
+	prefix map[string]*routeItem // `/users/`
+	regex  []*routeItem          // `{^/[a-z]+\[[0-9]+\]$}`
+	match  []*routeItem          // `/users/{:id}/posts/{:post_id}`
 }
 
 func NewRoutingTable() *RoutingTable {
@@ -56,20 +57,9 @@ func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *
 		item.pathBlocks = strings.Split(item.Path, "/")
 		r.match = append(r.match, item)
 	default:
-		path = normalizeFastPath(path)
 		r.fast[path] = item
 	}
 	r.full[item.key] = item
 	r.mux.HandleFunc(item.key, handler)
 	return item, nil
-}
-
-func normalizeFastPath(path string) string {
-	if path == "" {
-		return "/"
-	}
-	if path[len(path)-1:] != "/" {
-		return path + "/"
-	}
-	return path
 }

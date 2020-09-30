@@ -6,7 +6,10 @@ import (
 	"testing"
 )
 
-func Test_seekFast(t *testing.T) {
+// register: /user
+// when /user  √
+// when /user/ x
+func Test_seekFast_withoutSlashEnd(t *testing.T) {
 	r := NewRoutingTable()
 	_, _ = r.Register("/users", fakeHandler, []string{http.MethodGet})
 
@@ -22,7 +25,7 @@ func Test_seekFast(t *testing.T) {
 	wr = httptest.NewRecorder()
 	req, _ = http.NewRequest(http.MethodGet, "/users/", nil)
 	r.ServeHTTP(wr, req)
-	if wr.Code != http.StatusOK {
+	if wr.Code != http.StatusNotFound {
 		t.Fail()
 	}
 }
