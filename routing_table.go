@@ -60,3 +60,13 @@ func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *
 	r.full[item.key] = item
 	return item, nil
 }
+
+func normalizeFastPath(path string) string {
+	if path == "" {
+		return "/"
+	}
+	if path[len(path)-1:] != "/" {
+		return path + "/"
+	}
+	return path
+}
