@@ -25,9 +25,6 @@ func newRouteItem(path string, handler func(http.ResponseWriter, *http.Request),
 	if path == "" {
 		return nil, errors.New("[WARN] routing pattern cannot be empty")
 	}
-	if len(methods) < 1 {
-		return nil, errors.New("[WARN] routing method cannot be empty")
-	}
 	item := &routeItem{Path: path, Handler: handler, HTTPMethods: methods}
 	item.fillKey()
 	return item, nil
@@ -36,15 +33,21 @@ func newRouteItem(path string, handler func(http.ResponseWriter, *http.Request),
 // fillKey Calculate hash from path and http methods. Assign hash value to `item.key`.
 func (item *routeItem) fillKey() *routeItem {
 	bytes := []byte(item.Path)
-	sort.Strings(item.HTTPMethods)
-	for _, m := range item.HTTPMethods {
-		bytes = append(bytes, m...)
+	if len(item.HTTPMethods) > 0 {
+		sort.Strings(item.HTTPMethods)
+		for _, m := range item.HTTPMethods {
+			bytes = append(bytes, m...)
+		}
 	}
-	item.key = fmt.Sprintf("%x", md5.Sum(bytes))
+	item.key = fmt.Sprintf("/%x", md5.Sum(bytes))
 	return item
 }
 
+// validHTTPMethod empty slice means allow all
 func (item *routeItem) validHTTPMethod(method string) bool {
+	if len(item.HTTPMethods) == 0 {
+		return true
+	}
 	for _, m := range item.HTTPMethods {
 		if method == m {
 			return true

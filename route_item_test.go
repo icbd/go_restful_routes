@@ -7,27 +7,21 @@ import (
 
 func Test_fillKey(t *testing.T) {
 	// hash key should be filled
-	item := &routeItem{
-		Path:        "/users",
-		HTTPMethods: []string{http.MethodGet},
-	}
+	item, _ := newRouteItem("/users", fakeHandler, []string{http.MethodGet})
 	item.fillKey()
-	if len(item.key) != 32 {
+	if len(item.key) != 1+32 {
 		t.Fail()
 	}
 
 	// the hash of two different items should be different
-	other := &routeItem{
-		Path:        "/users/",
-		HTTPMethods: []string{http.MethodGet},
-	}
-	other.fillKey()
-	if item.key == other.key {
+	otherItem, _ := newRouteItem("/users/", fakeHandler, []string{http.MethodGet})
+	otherItem.fillKey()
+	if item.key == otherItem.key {
 		t.Fail()
 	}
 }
 
-func TestNewRouteItem(t *testing.T) {
+func Test_newRouteItem(t *testing.T) {
 	handler := func(writer http.ResponseWriter, request *http.Request) {}
 	var err error
 	var item *routeItem
@@ -38,9 +32,9 @@ func TestNewRouteItem(t *testing.T) {
 		t.Fail()
 	}
 
-	// methods should not be empty
+	// methods could be empty
 	item, err = newRouteItem("/", handler, []string{})
-	if err == nil || item != nil {
+	if err != nil || item == nil {
 		t.Fail()
 	}
 
@@ -59,6 +53,17 @@ func Test_validHTTPMethod(t *testing.T) {
 		t.Fail()
 	}
 	if item.validHTTPMethod(http.MethodDelete) {
+		t.Fail()
+	}
+}
+
+// allow all
+func Test_validHTTPMethod_emptyMethods(t *testing.T) {
+	item, _ := newRouteItem("/", fakeHandler, nil)
+	if !item.validHTTPMethod(http.MethodPost) {
+		t.Fail()
+	}
+	if !item.validHTTPMethod(http.MethodDelete) {
 		t.Fail()
 	}
 }

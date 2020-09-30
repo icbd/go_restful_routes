@@ -31,9 +31,9 @@ func NewRoutingTable() *RoutingTable {
 
 // ServeHTTP implemented `http.Handler` interface
 func (r *RoutingTable) ServeHTTP(wrt http.ResponseWriter, req *http.Request) {
-	originUrl := req.URL
-	routeItem := seek(req)
-	Log(fmt.Sprintf("%v %v %v", req.Method, originUrl, req.URL))
+	originPath := req.URL.Path
+	routeItem := r.seek(req)
+	Log(fmt.Sprintf("%v %v %v", req.Method, req.URL.Path, originPath))
 	if routeItem != nil {
 		handler, _ := r.mux.Handler(req)
 		handler.ServeHTTP(wrt, req) // handle by http.ServeMux
@@ -55,9 +55,11 @@ func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *
 		item.pathBlocks = strings.Split(item.Path, "/")
 		r.match = append(r.match, item)
 	default:
-		r.fast[item.Path] = item
+		path = normalizeFastPath(path)
+		r.fast[path] = item
 	}
 	r.full[item.key] = item
+	r.mux.HandleFunc(item.key, handler)
 	return item, nil
 }
 
