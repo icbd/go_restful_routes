@@ -48,14 +48,16 @@ func (r *RoutingTable) ServeHTTP(wrt http.ResponseWriter, req *http.Request) {
 
 func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *http.Request), methods []string) (item *routeItem, err error) {
 	if item, err = newRouteItem(path, handler, methods); err != nil {
-		return
+		return nil, err
 	}
 	switch {
 	case path[0:1] == "{" && path[len(path)-1:] == "}":
 		item.regex = path[1 : len(path)-1]
 		r.regex = append(r.regex, item)
 	case strings.Contains(path, "{"):
-		item.pathBlocks = strings.Split(item.Path, "/")
+		if err = item.parsePathBlocks(); err != nil {
+			return nil, err
+		}
 		r.match = append(r.match, item)
 	case path[len(path)-1:] == "/":
 		r.prefix[path] = item

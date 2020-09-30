@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strings"
 )
 
 // routeItem
@@ -54,4 +55,14 @@ func (item *routeItem) validHTTPMethod(method string) bool {
 		}
 	}
 	return false
+}
+
+func (item *routeItem) parsePathBlocks() (err error) {
+	path := strings.TrimRight(item.Path, "/")
+	blocks := strings.Split(path, "/")
+	if len(blocks) < 1 {
+		return errors.New(fmt.Sprintf("[WARN] routing pattern is invalid: %v", path))
+	}
+	item.pathBlocks = blocks
+	return nil
 }
