@@ -26,3 +26,24 @@ func Test_seekFast(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func Test_seekRegex(t *testing.T) {
+	r := NewRoutingTable()
+	_, _ = r.Register("{^/user\\[[0-9]+\\]$}", fakeHandler, []string{http.MethodGet})
+
+	// success
+	wr := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/user[123]", nil)
+	r.ServeHTTP(wr, req)
+	if wr.Code != http.StatusOK {
+		t.Fail()
+	}
+
+	// not match
+	wr = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/user[]", nil)
+	r.ServeHTTP(wr, req)
+	if wr.Code != http.StatusNotFound {
+		t.Fail()
+	}
+}

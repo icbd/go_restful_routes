@@ -36,6 +36,7 @@ func (r *RoutingTable) ServeHTTP(wrt http.ResponseWriter, req *http.Request) {
 	Log(fmt.Sprintf("%v %v %v", req.Method, req.URL.Path, originPath))
 	if routeItem != nil {
 		handler, _ := r.mux.Handler(req)
+		req.URL.Path = originPath
 		handler.ServeHTTP(wrt, req) // handle by http.ServeMux
 	} else {
 		Log("route not found")
