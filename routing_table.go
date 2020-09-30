@@ -44,7 +44,7 @@ func (r *RoutingTable) ServeHTTP(wrt http.ResponseWriter, req *http.Request) {
 }
 
 func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *http.Request), methods []string) (item *routeItem, err error) {
-	if item, err = NewRouteItem(path, handler, methods); err != nil {
+	if item, err = newRouteItem(path, handler, methods); err != nil {
 		return
 	}
 	switch {
