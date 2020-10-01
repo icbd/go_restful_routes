@@ -78,7 +78,6 @@ func (params pathParams) matchPattern(patternBlock string, pathBlock string) boo
 			params[k] = uint16(n)
 			return true
 		}
-
 	case "uint32":
 		if n, err := strconv.ParseUint(pathBlock, 10, 32); err == nil {
 			params[k] = uint32(n)
