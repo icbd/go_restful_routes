@@ -17,6 +17,11 @@ func (r *RoutingTable) seek(req *http.Request) (item *routeItem) {
 		return item
 	}
 
+	item = r.seekMatch(req)
+	if item != nil {
+		return item
+	}
+
 	item = r.seekRegex(req)
 	if item != nil {
 		return item
@@ -59,6 +64,22 @@ func (r *RoutingTable) seekRegex(req *http.Request) (item *routeItem) {
 	return nil
 }
 
-//func (r *RoutingTable) seekMatch(req *http.Request) (item *routeItem) {
-//
-//}
+func (r *RoutingTable) seekMatch(req *http.Request) (item *routeItem) {
+	path := strings.TrimRight(req.URL.Path, "/")
+	blocks := strings.Split(path, "/")
+	for _, item = range r.match {
+		if params, ok := newPathParams(item.pathBlocks, blocks); ok {
+			if item.validHTTPMethod(req.Method) {
+				item.params = params
+				req.URL.Path = item.key
+				return item
+			}
+		}
+	}
+	return nil
+}
+
+func Params(req *http.Request) map[string]interface{} {
+	item := req.Context().Value(RouteItemContextKey).(*routeItem)
+	return item.params
+}

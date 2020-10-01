@@ -1,6 +1,7 @@
 package go_restful_routes
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -39,7 +40,8 @@ func (r *RoutingTable) ServeHTTP(wrt http.ResponseWriter, req *http.Request) {
 	if routeItem != nil {
 		handler, _ := r.mux.Handler(req)
 		req.URL.Path = originPath
-		handler.ServeHTTP(wrt, req) // handle by http.ServeMux
+		ctx := context.WithValue(req.Context(), RouteItemContextKey, routeItem)
+		handler.ServeHTTP(wrt, req.WithContext(ctx)) // handle by http.ServeMux
 	} else {
 		Log("route not found")
 		http.NotFound(wrt, req)

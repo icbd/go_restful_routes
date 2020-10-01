@@ -95,3 +95,40 @@ func Test_seekRegex(t *testing.T) {
 		t.Fail()
 	}
 }
+
+// register: /users/{:uid}
+// /users/123 √
+// /users/123/ √
+// /users/123/info x
+func Test_seekMatch(t *testing.T) {
+	routesPath := "/users/{string:str}/{:defaultStr}/{int:num}/{float:floatNum}/{uint:uNum}"
+	requestPath := "/users/clearString/defaultString/-12345/3.14159/12345"
+	handler := func(writer http.ResponseWriter, request *http.Request) {
+		params := Params(request)
+		if params["str"].(string) != "clearString" {
+			t.Fail()
+		}
+		if params["defaultStr"].(string) != "defaultString" {
+			t.Fail()
+		}
+		if params["num"].(int) != -12345 {
+			t.Fail()
+		}
+		if params["floatNum"].(float32) != 3.14159 {
+			t.Fail()
+		}
+		if params["uNum"].(uint) != 12345 {
+			t.Fail()
+		}
+		writer.WriteHeader(http.StatusOK)
+	}
+
+	r := NewRoutingTable()
+	_, _ = r.Register(routesPath, handler, []string{http.MethodGet})
+	wr := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, requestPath, nil)
+	r.ServeHTTP(wr, req)
+	if wr.Code != http.StatusOK {
+		t.Fail()
+	}
+}

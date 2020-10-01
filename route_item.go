@@ -19,6 +19,7 @@ type routeItem struct {
 	key         string
 	pathBlocks  []string // split Path by `/`
 	regex       string   // trim `{}` from path
+	params      pathParams
 }
 
 // newRouteItem Include sorting the methods and filling the key.
