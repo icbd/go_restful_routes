@@ -15,6 +15,7 @@ type RoutingTable struct {
 	mux  *http.ServeMux
 	full map[string]*routeItem // routesHash => *routeItem
 
+	root   *routeItem            // `/`
 	fast   map[string]*routeItem // `/users`
 	prefix map[string]*routeItem // `/users/`
 	regex  []*routeItem          // `{^/[a-z]+\[[0-9]+\]$}`
@@ -53,6 +54,9 @@ func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *
 		return nil, err
 	}
 	switch {
+	case path == "/":
+		r.root = item
+		r.mux.HandleFunc("/", handler)
 	case path[0:1] == "{" && path[len(path)-1:] == "}":
 		item.regex = path[1 : len(path)-1]
 		r.regex = append(r.regex, item)

@@ -27,6 +27,13 @@ func (r *RoutingTable) seek(req *http.Request) (item *routeItem) {
 		return item
 	}
 
+	return r.root
+}
+
+func (r *RoutingTable) seekRoot(req *http.Request) (item *routeItem) {
+	if req.URL.Path == "/" {
+		return r.root
+	}
 	return nil
 }
 
