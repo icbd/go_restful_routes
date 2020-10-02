@@ -12,7 +12,30 @@ go get github.com/icbd/go_restful_routes
 ```
 ## How to use
 
+Initialize a new routing table using `NewRoutingTable`. 
+Registering routing entries by `Register`.
 
+The first parameter of `Register` is the matching path, it has 5 types, and will be parsed in order:
+
+1. fast matching, exact string matching. ex, `/users` can be matched by `/users`;
+2. prefix matching. ex, `/users/`, `/users/123`, `/users/123/info`, `/users/123/info/` can matched by `/users/`;
+3. params matching. ex, `/users/123` can matched by `/users/{int:uid}`, `/users/bob` can matched by `/users/{:name}`;
+4. regex matching. ex, `/users[123]` can matched by `{^/users\[[0-9]+\]$}`;
+5. root matching. Only match `/` .    
+
+The twice parameter of `Register` is the handler function.
+
+The third parameter of `Register` is the slice of http methods. Empty slice represent any method allowed.
+
+```go
+func Handler() http.Handler {
+	r := go_restful_routes.NewRoutingTable()
+	_, _ = r.Register("/", controllers.RootController, []string{})
+	_, _ = r.Register("/hi", controllers.HiController, []string{http.MethodGet, http.MethodPost})
+	_, _ = r.Register("/users/{int:uid}", controllers.ShowUser, []string{http.MethodGet})
+	return r
+}
+```
 
 ## License
 

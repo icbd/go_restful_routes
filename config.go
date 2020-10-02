@@ -5,6 +5,7 @@ import (
 )
 
 const RouteItemContextKey string = "RouteItemContextKey"
+
 var Verbose bool = true
 var Log = func(s string) {
 	if Verbose {
