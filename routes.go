@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+type handlerFunc func(http.ResponseWriter, *http.Request)
+
 func (r *RoutingTable) seek(req *http.Request) (item *routeItem) {
 	item = r.seekFast(req)
 	if item != nil {
@@ -49,7 +51,7 @@ func (r *RoutingTable) seekFast(req *http.Request) (item *routeItem) {
 
 func (r *RoutingTable) seekPrefix(req *http.Request) (item *routeItem) {
 	for _, item = range r.prefix {
-		if strings.HasPrefix(req.URL.Path, item.Path) {
+		if strings.HasPrefix(req.URL.Path, item.Pattern) {
 			if item.validHTTPMethod(req.Method) {
 				req.URL.Path = item.key
 				return item

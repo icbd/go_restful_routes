@@ -61,7 +61,7 @@ func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *
 		item.regex = path[1 : len(path)-1]
 		r.regex = append(r.regex, item)
 	case strings.Contains(path, "{"):
-		if err = item.parsePathBlocks(); err != nil {
+		if err = item.parsePatternBlocks(); err != nil {
 			return nil, err
 		}
 		r.match = append(r.match, item)
