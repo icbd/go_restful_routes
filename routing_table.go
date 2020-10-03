@@ -75,6 +75,12 @@ func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *
 	return item, nil
 }
 
+func (r *RoutingTable) Any(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{}); err != nil {
+		panic(err)
+	}
+}
+
 func (r *RoutingTable) Get(path string, handler func(http.ResponseWriter, *http.Request)) {
 	if _, err := r.Register(path, handler, []string{http.MethodGet}); err != nil {
 		panic(err)

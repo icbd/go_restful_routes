@@ -40,6 +40,7 @@ func Handler() http.Handler {
 You can also use HTTP method verb to register routes directly.
 
 ```go
+r.Any("/", controllers.RootController)
 r.Get("/hi", controllers.HiController)
 ```
 
