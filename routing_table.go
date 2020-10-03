@@ -74,3 +74,57 @@ func (r *RoutingTable) Register(path string, handler func(http.ResponseWriter, *
 	r.mux.HandleFunc(item.key, handler)
 	return item, nil
 }
+
+func (r *RoutingTable) Get(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{http.MethodGet}); err != nil {
+		panic(err)
+	}
+}
+
+func (r *RoutingTable) Post(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{http.MethodPost}); err != nil {
+		panic(err)
+	}
+}
+
+func (r *RoutingTable) Patch(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{http.MethodPatch}); err != nil {
+		panic(err)
+	}
+}
+
+func (r *RoutingTable) Put(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{http.MethodPut}); err != nil {
+		panic(err)
+	}
+}
+
+func (r *RoutingTable) Delete(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{http.MethodDelete}); err != nil {
+		panic(err)
+	}
+}
+
+func (r *RoutingTable) Head(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{http.MethodHead}); err != nil {
+		panic(err)
+	}
+}
+
+func (r *RoutingTable) Options(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{http.MethodOptions}); err != nil {
+		panic(err)
+	}
+}
+
+func (r *RoutingTable) Connect(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{http.MethodConnect}); err != nil {
+		panic(err)
+	}
+}
+
+func (r *RoutingTable) Trace(path string, handler func(http.ResponseWriter, *http.Request)) {
+	if _, err := r.Register(path, handler, []string{http.MethodTrace}); err != nil {
+		panic(err)
+	}
+}

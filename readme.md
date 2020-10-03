@@ -37,6 +37,12 @@ func Handler() http.Handler {
 }
 ```
 
+You can also use HTTP method verb to register routes directly.
+
+```go
+r.Get("/hi", controllers.HiController)
+```
+
 ## License
 
 MIT, see [LICENSE](LICENSE)
