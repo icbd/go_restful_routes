@@ -75,7 +75,7 @@ func (r *RoutingTable) seekMatch(req *http.Request) (item *routeItem) {
 	path := strings.TrimRight(req.URL.Path, "/")
 	blocks := strings.Split(path, "/")
 	for _, item = range r.match {
-		if params, ok := newPathParams(item.pathBlocks, blocks); ok {
+		if params, ok := newPathParams(item.patternBlocks, blocks); ok {
 			if item.validHTTPMethod(req.Method) {
 				item.params = params
 				req.URL.Path = item.key
