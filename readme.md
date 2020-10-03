@@ -44,6 +44,16 @@ r.Any("/", controllers.RootController)
 r.Get("/hi", controllers.HiController)
 ```
 
+## Config Log
+
+```go
+go_restful_routes.Verbose = true
+go_restful_routes.Log = func(s string) {
+    if go_restful_routes.Verbose {
+        log.Println(s)
+    }
+}
+```
 ## License
 
 MIT, see [LICENSE](LICENSE)
