@@ -15,11 +15,11 @@ type RoutingTable struct {
 	mux  *http.ServeMux
 	full map[string]*routeItem // routesHash => *routeItem
 
-	root   *routeItem            // `/`
 	fast   map[string]*routeItem // `/users`
 	prefix map[string]*routeItem // `/users/`
-	regex  []*routeItem          // `{^/[a-z]+\[[0-9]+\]$}`
 	match  []*routeItem          // `/users/{:id}/posts/{:post_id}`
+	regex  []*routeItem          // `{^/[a-z]+\[[0-9]+\]$}`
+	root   *routeItem            // `/`
 }
 
 func NewRoutingTable() *RoutingTable {
@@ -36,7 +36,7 @@ func NewRoutingTable() *RoutingTable {
 // ServeHTTP implemented `http.Handler` interface
 func (r *RoutingTable) ServeHTTP(wrt http.ResponseWriter, req *http.Request) {
 	originPath := req.URL.Path
-	routeItem := r.seek(req)
+	routeItem := r.seek(req) // Core
 	Log(fmt.Sprintf("%v %v %v", req.Method, req.URL.Path, originPath))
 	if routeItem != nil {
 		handler, _ := r.mux.Handler(req)
