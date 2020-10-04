@@ -6,9 +6,9 @@ import (
 
 func opt() *option {
 	return &option{
-		dir:    "public/",
-		prefix: "/static/",
-		suffix: []string{"ico"},
+		Dir:    "public/",
+		Prefix: "/static/",
+		Suffix: []string{"ico"},
 	}
 }
 

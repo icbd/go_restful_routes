@@ -44,6 +44,26 @@ r.Any("/", controllers.RootController)
 r.Get("/hi", controllers.HiController)
 ```
 
+## Static Routes
+
+```go
+func RootController(writer http.ResponseWriter, request *http.Request) {
+	if request.URL.Path != "/" {
+		static.New(writer, request, "public/", "/static/", []string{"png", "jpg"})
+		return
+	}
+
+	_, _ = writer.Write([]byte("<h1>Welcome~</h1>"))
+}
+
+```
+
+* Using `Dir` to specify static resource directory;
+
+* Using `Prefix` to replace routes prefix, ex, if request URL is`/static/hello.png`, will Server the file in `{Dir}/hello.png`;
+
+* Using `Suffix` to specify static file types. If leave it blank, the default value is used: `[ico, jpg, jpeg, png, gif, webp, html, js, css, md]`
+
 ## Config Log
 
 ```go
