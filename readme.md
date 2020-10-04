@@ -49,7 +49,7 @@ r.Get("/hi", controllers.HiController)
 ```go
 func RootController(writer http.ResponseWriter, request *http.Request) {
 	if request.URL.Path != "/" {
-		static.New(writer, request, "public/", "/static/", []string{"png", "jpg"})
+		static.New(writer, request, "public/", "/static/", "ico", "html")
 		return
 	}
 
