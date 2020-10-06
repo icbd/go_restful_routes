@@ -8,6 +8,9 @@ import (
 type pathParams map[string]interface{}
 
 func newPathParams(patternBlocks []string, pathBlocks []string) (pathParams, bool) {
+	if len(patternBlocks) != len(pathBlocks) {
+		return nil, false
+	}
 	params := make(pathParams)
 	for i, patternBlock := range patternBlocks {
 		if ok := params.match(patternBlock, pathBlocks[i]); !ok {
