@@ -10,6 +10,13 @@
 ```shell script
 go get github.com/icbd/go_restful_routes
 ```
+
+## Run Example
+
+```shell script
+$ PUBLIC_DIR=example/public go run example/main.go
+```
+
 ## How to use
 
 Initialize a new routing table using `NewRoutingTable`. 
@@ -74,6 +81,7 @@ go_restful_routes.Log = func(s string) {
     }
 }
 ```
+
 ## License
 
 MIT, see [LICENSE](LICENSE)
