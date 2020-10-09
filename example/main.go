@@ -18,7 +18,7 @@ func main() {
 func Handler() http.Handler {
 	r := go_restful_routes.NewRoutingTable()
 	r.Get("/hi", HiController)
-	r.Post("/users/{int:Uid}", ShowUser)
+	r.Post("/users/{int:Uid}", CreateUser)
 	r.Any("/", RootController)
 	return r
 }
@@ -33,8 +33,8 @@ func HiController(w http.ResponseWriter, req *http.Request) {
 	_, _ = w.Write([]byte("<h1>hi</h1>"))
 }
 
-// GET /users/123
-func ShowUser(w http.ResponseWriter, req *http.Request) {
+// POST /users/123
+func CreateUser(w http.ResponseWriter, req *http.Request) {
 	params := go_restful_routes.Params(req)
 	u := user{Uid: params["Uid"].(int), CreatedAt: time.Now()}
 	if data, err := json.Marshal(u); err == nil {
